@@ -327,9 +327,18 @@ static void fillConversionTables(void)
 	terrainTable[2][78] = T_CLIFF;
 
 	// decals
-
 	memset(conversionTable, 0, sizeof(conversionTable));
+
 	// TODO: 0, 9, 11, 28 should be 'dry_grass', but we need to make it first
+	conversionTable[0][13] = "tile-13";
+	conversionTable[0][14] = "tile-14";
+	conversionTable[0][15] = "tile-15";
+	conversionTable[0][16] = "tile-16";
+	conversionTable[0][17] = "tile-17";
+	conversionTable[0][30] = "tile-30";
+	conversionTable[0][31] = "tile-31";
+	conversionTable[0][32] = "tile-32";
+	conversionTable[0][33] = "tile-33";
 	conversionTable[0][37] = "road_damage";
 	conversionTable[0][47] = "road_end";
 	conversionTable[0][49] = "tracks_faint";
@@ -341,6 +350,8 @@ static void fillConversionTables(void)
 	conversionTable[0][57] = "road_junction";
 	conversionTable[0][58] = "crater3";
 	conversionTable[0][59] = "road";
+	conversionTable[0][60] = "tile-60";
+	conversionTable[0][61] = "tile-61";
 	conversionTable[0][62] = "crater4";
 	conversionTable[0][63] = "crater_slice_1";
 	conversionTable[0][64] = "crater_slice_2";
@@ -349,13 +360,32 @@ static void fillConversionTables(void)
 	conversionTable[0][67] = "crater_slice_5";
 	conversionTable[0][68] = "crater_slice_6";
 	conversionTable[0][69] = "crater_slice_7";
+	conversionTable[0][70] = "tile-70";
 	conversionTable[0][72] = "tracks_junction";
 	conversionTable[0][73] = "tracks_cross";
 	//conversionTable[0][73] = "rubble"; TODO
+
 	conversionTable[1][1] = "rocks";
+	conversionTable[1][2] = "tile-02";
 	//conversionTable[1][5] = "rubble_piece"; TODO
+	conversionTable[1][5] = "tile-05";
+	conversionTable[1][11] = "tile-11";
+	conversionTable[1][12] = "tile-12";
+	conversionTable[1][13] = "tile-13";
+	conversionTable[1][14] = "tile-14";
+	conversionTable[1][15] = "tile-15";
+	conversionTable[1][16] = "tile-16";
+	conversionTable[1][17] = "tile-17";
+	conversionTable[1][20] = "tile-20";
 	conversionTable[1][21] = "rocks2";
+	conversionTable[1][23] = "tile-23";
+	conversionTable[1][24] = "tile-24";
+	conversionTable[1][25] = "tile-25";
+	conversionTable[1][26] = "tile-26";
 	//conversionTable[1][28] = "sewer_hole"; TODO
+	conversionTable[1][28] = "tile-28";
+	conversionTable[1][31] = "tile-31";
+	conversionTable[1][32] = "tile-32";
 	conversionTable[1][36] = "grass";
 	conversionTable[1][40] = "wide_road";
 	conversionTable[1][41] = "wide_road_end";
@@ -365,15 +395,30 @@ static void fillConversionTables(void)
 	conversionTable[1][45] = "wide_road_end";
 	conversionTable[1][46] = "wide_road_damage";
 	conversionTable[1][47] = "wide_road_rubble";
+	conversionTable[1][48] = "tile-48";
 	conversionTable[1][52] = "rocks3";
 	conversionTable[1][55] = "dark_crater";
 	conversionTable[1][56] = "dark_crater2";
 	conversionTable[1][57] = "dark_crater3";
+	conversionTable[1][59] = "tile-59";
+	conversionTable[1][61] = "tile-61";
+	conversionTable[1][63] = "tile-63";
+	conversionTable[1][64] = "tile-64";
+	conversionTable[1][65] = "tile-65";
+	conversionTable[1][66] = "tile-66";
+
 	conversionTable[2][1] = "rocks3";
 	conversionTable[2][8] = "snow_tiny";
 	conversionTable[2][13] = "road_junction";
+	conversionTable[2][14] = "tile-14";
+	conversionTable[2][15] = "tile-15";
+	conversionTable[2][16] = "tile-16";
+	conversionTable[2][17] = "tile-17";
 	conversionTable[2][27] = "rocks4";
 	conversionTable[2][28] = "rocks5";
+	conversionTable[2][31] = "tile-31";
+	conversionTable[2][32] = "tile-32";
+	conversionTable[2][33] = "tile-33";
 	conversionTable[2][37] = "road_damage";
 	conversionTable[2][43] = "snow_tiny2";
 	conversionTable[2][47] = "snow_tiny3";
@@ -381,6 +426,7 @@ static void fillConversionTables(void)
 	conversionTable[2][50] = "tracks_turn";
 	conversionTable[2][51] = "tracks";
 	conversionTable[2][52] = "tracks_end";
+	conversionTable[2][55] = "tile-55";
 	conversionTable[2][56] = "crater5";
 	conversionTable[2][57] = "splatter";
 	conversionTable[2][58] = "crater6";
