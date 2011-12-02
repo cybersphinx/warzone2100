@@ -88,7 +88,8 @@ bool CancelPressed(void)
 	const bool cancel = keyPressed(KEY_ESC);
 	if (cancel)
 	{
-		inputLoseFocus();	// clear the input buffer.
+		// FIXME: FIXME: 
+		//inputLoseFocus();	// clear the input buffer.
 	}
 	return cancel;
 }
@@ -798,7 +799,8 @@ static bool startVideoOptionsMenu(void)
 
 bool runVideoOptionsMenu(void)
 {
-	QList<QSize> modes = WzMainWindow::instance()->availableResolutions();
+	SDL_Rect **modes = SDL_ListModes(NULL, SDL_FULLSCREEN | SDL_HWSURFACE);
+//	QList<QSize> modes = WzMainWindow::instance()->availableResolutions();
 	UDWORD id = widgRunScreen(psWScreen);
 	int level;
 
@@ -852,9 +854,44 @@ bool runVideoOptionsMenu(void)
 		case FRONTEND_RESOLUTION:
 		case FRONTEND_RESOLUTION_R:
 		{
-			int current, count;
+			int current, count, oldcurrent;
 
 			// Get the current mode offset
+
+			for (count = 0, current = 0; modes[count]; count++)
+			{
+				if (war_GetWidth() == modes[count]->w
+				 && war_GetHeight() == modes[count]->h)
+				{
+					current = count;
+				}
+			}
+			// Increment and clip if required
+			// Hide resolutions lower than Warzone can support
+			oldcurrent = current;
+			do
+			{
+				if (!mouseReleased(MOUSE_RMB))
+				{
+					if (--current < 0)
+						current = count - 1;
+				}
+				else
+				{
+					if (++current == count)
+						current = 0;
+				}	
+			} while ((modes[current]->w < 640 || modes[current]->h < 480)
+				&& current != oldcurrent);
+
+			// Set the new width and height (takes effect on restart)
+			war_SetWidth(modes[current]->w);
+			war_SetHeight(modes[current]->h);
+
+			// Generate the textual representation of the new width and height
+			snprintf(resolution, WIDG_MAXSTR, "%d x %d", modes[current]->w,
+			         modes[current]->h);
+#if 0
 			for (count = 0, current = 0; count < modes.size(); count++)
 			{
 				if (war_GetWidth() == modes[count].width() && war_GetHeight() == modes[count].height())
@@ -888,6 +925,7 @@ bool runVideoOptionsMenu(void)
 
 			// Generate the textual representation of the new width and height
 			snprintf(resolution, WIDG_MAXSTR, "%d x %d", modes[current].width(), modes[current].height());
+#endif
 
 			// Update the widget
 			widgSetString(psWScreen, FRONTEND_RESOLUTION_R, resolution);
@@ -934,14 +972,16 @@ bool runVideoOptionsMenu(void)
 		case FRONTEND_VSYNC:
 		case FRONTEND_VSYNC_R:
 		{
-			WzMainWindow::instance()->setSwapInterval(!war_GetVsync());
-			war_SetVsync(WzMainWindow::instance()->swapInterval() > 0);
+			// WzMainWindow::instance()->setSwapInterval(!war_GetVsync());
+			// war_SetVsync(WzMainWindow::instance()->swapInterval() > 0);
 			if (war_GetVsync())
 			{
+				war_SetVsync(false);
 				widgSetString(psWScreen, FRONTEND_VSYNC_R, _("On"));
 			}
 			else
 			{
+				war_SetVsync(true);
 				widgSetString(psWScreen, FRONTEND_VSYNC_R, _("Off"));
 			}
 			break;

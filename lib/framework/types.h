@@ -31,6 +31,7 @@
 # include <inttypes.h>
 #else
 // Defines C99 types for C99 incompatible compilers (e.g. MSVC)
+#include <SDL_stdinc.h> // NOTE: / FIXME:  needed ?
 //BEGIN Hope this is right.
 typedef unsigned char      uint8_t;
 typedef unsigned short     uint16_t;

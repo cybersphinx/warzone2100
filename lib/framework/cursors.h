@@ -24,6 +24,9 @@
 #ifndef __INCLUDED_LIB_FRAMEWORK_CURSORS_H__
 #define __INCLUDED_LIB_FRAMEWORK_CURSORS_H__
 
+#include <SDL_mouse.h>
+
+
 enum CURSOR
 {
 	CURSOR_ARROW,
@@ -57,5 +60,15 @@ enum CURSOR
 
 	CURSOR_MAX,
 };
+
+enum CURSOR_TYPE
+{
+	CURSOR_16,
+	CURSOR_32,
+};
+
+extern SDL_Cursor* init_system_cursor(CURSOR cur, CURSOR_TYPE type);
+extern SDL_Cursor* init_system_cursor16(CURSOR cur);
+extern SDL_Cursor* init_system_cursor32(CURSOR cur);
 
 #endif // __INCLUDED_LIB_FRAMEWORK_CURSORS_H__

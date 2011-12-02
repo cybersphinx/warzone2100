@@ -95,7 +95,8 @@ void pie_ScreenFlip(int clearMode)
 	GLbitfield clearFlags = 0;
 
 	screenDoDumpToDiskIfRequired();
-	wzScreenFlip();
+	SDL_GL_SwapBuffers();
+	// wzScreenFlip();
 	if (!(clearMode & CLEAR_OFF_AND_NO_BUFFER_DOWNLOAD))
 	{
 		glDepthMask(GL_TRUE);

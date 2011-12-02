@@ -24,7 +24,7 @@
 
 #include <QtGui/QImageReader>
 #include <QtGui/QBitmap>
-#include <QtGui/QPainter>
+//#include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QMessageBox>
 #include <QtGui/QIcon>
@@ -34,7 +34,7 @@
 #include "wzapp.h"
 
 #if defined(WZ_CC_MSVC)
-#include "wzapp.h.moc"		// this is generated on the pre-build event.
+//#include "wzapp.h.moc"		// this is generated on the pre-build event.
 #endif
 
 #include "lib/exceptionhandler/dumpinfo.h"
@@ -106,11 +106,12 @@ static uint16_t mouseXPos = 0, mouseYPos = 0;
 static CURSOR lastCursor = CURSOR_ARROW;
 static bool crashing = false;
 
-unsigned int screenWidth = 0;
-unsigned int screenHeight = 0;
+//unsigned int screenWidth = 0;
+//unsigned int screenHeight = 0;
 static void inputAddBuffer(UDWORD key, utf_32_char unicode);
 static int WZkeyToQtKey(int code);
 
+#if 0
 void WzMainWindow::loadCursor(CURSOR cursor, int x, int y, QImageReader &buffer)
 {
 	buffer.device()->reset();
@@ -209,6 +210,7 @@ void WzMainWindow::initializeGL()
 {
 	QtGameWidget::initializeGL();
 }
+#endif
 
 #if 0
 // Re-enable when Qt's font rendering is improved.
@@ -223,6 +225,7 @@ void WzMainWindow::drawPixmap(int XPos, int YPos, QPixmap *pix)
 }
 #endif
 
+#if 0
 void WzMainWindow::resizeGL(int width, int height)
 {
 	screenWidth = width;
@@ -1081,7 +1084,7 @@ int wzSemaphoreAvailable(WZ_SEMAPHORE *semaphore)
 {
 	return semaphore->available();
 }
-
+#endif
 /**************************/
 /***     Font support   ***/
 /**************************/
@@ -1182,6 +1185,7 @@ void wzFatalDialog(const char *text)
 	QMessageBox::critical(NULL, "Fatal error", text);
 }
 
+#if 0
 static int WZkeyToQtKey(int code)
 {
 	if (code >= Qt::Key_0  && code  <= Qt::Key_AsciiTilde)
@@ -1263,6 +1267,7 @@ static int WZkeyToQtKey(int code)
 
 	return 0;	// nothing found (should never happen)
 }
+#endif
 
 void WzConfig::setVector3f(const QString &name, const Vector3f &v)
 {

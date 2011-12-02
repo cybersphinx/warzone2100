@@ -699,7 +699,8 @@ void NETaddRedirects(void)
 	debug(LOG_NET, "%s\n", __FUNCTION__);
 	if (!upnp_done)
 	{
-		upnp = wzThreadJoin(upnpdiscover);
+		// FIXME: FIXME: EH ?
+		// upnp = wzThreadJoin(upnpdiscover);
 		upnp_done = true;
 	}
 	if (upnp) {

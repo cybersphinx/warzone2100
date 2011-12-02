@@ -82,6 +82,11 @@ extern void pie_SetTexturePage(SDWORD num);
 extern void pie_SetAlphaTest(bool keyingOn);
 extern void pie_SetRendMode(REND_MODE rendMode);
 
+extern void pie_InitColourMouse(IMAGEFILE* img, const uint16_t cursorIDs[CURSOR_MAX]);
+extern void pie_SetMouse(CURSOR cursor, bool coloured);
+extern void pie_DrawMouse(unsigned int X, unsigned int Y);
+extern void pie_ShowMouse(bool visible);
+
 // Shaders control center
 extern bool pie_GetShaderAvailability(void);
 extern void pie_SetShaderAvailability(bool);

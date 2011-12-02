@@ -20,9 +20,9 @@
 #ifndef WZAPP_H
 #define WZAPP_H
 
-#include <QtGui/QApplication>
+//#include <QtGui/QApplication>
 #include <QtGui/QImageReader>
-#include <QtOpenGL/QGLWidget>
+//#include <QtOpenGL/QGLWidget>
 #include <QtCore/QBuffer>
 #include <QtCore/QTime>
 #include <QtCore/QThread>
@@ -31,7 +31,7 @@
 #include <QtCore/QSettings>
 #include <physfs.h>
 
-#include "lib/qtgame/qtgame.h"
+//#include "lib/qtgame/qtgame.h"
 
 // Get platform defines before checking for them.
 // Qt headers MUST come before platform specific stuff!
@@ -51,7 +51,7 @@ public:
 	Vector2i vector2i(const QString &name);
 	void setVector2i(const QString &name, const Vector2i &v);
 };
-
+#if 0
 class WzMainWindow : public QtGameWidget
 {
 	Q_OBJECT
@@ -96,7 +96,7 @@ public:
 public slots:
 	void close();
 };
-
+#endif
 struct _wzThread : public QThread
 {
 	_wzThread(int (*threadFunc_)(void *), void *data_) : threadFunc(threadFunc_), data(data_) {}

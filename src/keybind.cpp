@@ -1328,7 +1328,8 @@ void kf_toggleTrapCursor(void)
 	const char *msg;
 	bool trap = !war_GetTrapCursor();
 	war_SetTrapCursor(trap);
-	(trap? wzGrabMouse : wzReleaseMouse)();
+	SDL_WM_GrabInput(trap ? SDL_GRAB_ON : SDL_GRAB_OFF);
+	//(trap? wzGrabMouse : wzReleaseMouse)();
 	sasprintf((char**)&msg, _("Trap cursor %s"), trap ? "ON" : "OFF");
 	addConsoleMessage(msg, DEFAULT_JUSTIFY, SYSTEM_MESSAGE);
 }
@@ -1355,7 +1356,8 @@ void	kf_TogglePauseMode( void )
 		// If cursor trapping is enabled allow the cursor to leave the window
 		if (war_GetTrapCursor())
 		{
-			wzReleaseMouse();
+			SDL_WM_GrabInput(SDL_GRAB_OFF);
+			// wzReleaseMouse();
 		}
 
 		/* And stop the clock */
@@ -1374,7 +1376,8 @@ void	kf_TogglePauseMode( void )
 		// Re-enable cursor trapping if it is enabled
 		if (war_GetTrapCursor())
 		{
-			wzGrabMouse();
+			SDL_WM_GrabInput(SDL_GRAB_ON);
+			//wzGrabMouse();
 		}
 
 		/* And start the clock again */

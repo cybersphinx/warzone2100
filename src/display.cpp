@@ -867,17 +867,20 @@ void processMouseClickInput(void)
 
 	if (gamePaused())
 	{
-		wzSetCursor(CURSOR_DEFAULT);
+		pie_SetMouse(CURSOR_DEFAULT, war_GetColouredCursor());
+		// wzSetCursor(CURSOR_DEFAULT);
 	}
 	if (buildState == BUILD3D_VALID)
 	{
 		// special casing for building
-		wzSetCursor(CURSOR_BUILD);
+		pie_SetMouse(CURSOR_BUILD, war_GetColouredCursor());
+		// wzSetCursor(CURSOR_BUILD);
 	}
 	else if (buildState == BUILD3D_POS)
 	{
 		// special casing for building - can't build here
-		wzSetCursor(CURSOR_NOTPOSSIBLE);
+		pie_SetMouse(CURSOR_NOTPOSSIBLE, war_GetColouredCursor());
+		// wzSetCursor(CURSOR_NOTPOSSIBLE);
 	}
 	else if (selection != SC_INVALID)
 	{
@@ -1028,29 +1031,34 @@ void processMouseClickInput(void)
 				arnMPointers[item][selection] == CURSOR_MOVE && bMultiPlayer)
 			{
 				// Alt+move = disembark transporter
-				wzSetCursor(CURSOR_DISEMBARK);
+				pie_SetMouse(CURSOR_DISEMBARK, war_GetColouredCursor());
+				// wzSetCursor(CURSOR_DISEMBARK);
 			}
 			else if (specialOrderKeyDown() && selection == SC_DROID_DIRECT &&
 				arnMPointers[item][selection] == CURSOR_MOVE)
 			{
 				// Alt+move = scout
-				wzSetCursor(CURSOR_SCOUT);
+				pie_SetMouse(CURSOR_SCOUT, war_GetColouredCursor());
+				// wzSetCursor(CURSOR_SCOUT);
 			}
 			else if (arnMPointers[item][selection] == CURSOR_NOTPOSSIBLE &&
 			         ObjUnderMouse && (ObjUnderMouse->player == selectedPlayer) &&
 			         ObjUnderMouse->type == OBJ_STRUCTURE && ((STRUCTURE *)ObjUnderMouse)->asWeaps[0].nStat &&
 			         (asWeaponStats[((STRUCTURE *)ObjUnderMouse)->asWeaps[0].nStat].weaponSubClass == WSC_LAS_SAT))
 			{
-				wzSetCursor(CURSOR_SELECT); // Special casing for LasSat
+				pie_SetMouse(CURSOR_SELECT, war_GetColouredCursor());
+				// wzSetCursor(CURSOR_SELECT); // Special casing for LasSat
 			}
 			else
 			{
-				wzSetCursor(arnMPointers[item][selection]);
+				pie_SetMouse(arnMPointers[item][selection], war_GetColouredCursor());
+				// wzSetCursor(arnMPointers[item][selection]);
 			}
 		}
 		else
 		{
-			wzSetCursor(CURSOR_DEFAULT);
+			pie_SetMouse(CURSOR_DEFAULT, war_GetColouredCursor());
+			// wzSetCursor(CURSOR_DEFAULT);
 		}
 	}
 	else
@@ -1065,22 +1073,26 @@ void processMouseClickInput(void)
 			if (item == MT_ENEMYDROID || item == MT_ENEMYSTR || item == MT_DAMFEATURE)
 			{
 				//display attack cursor
-				wzSetCursor(CURSOR_ATTACK);
+				pie_SetMouse(CURSOR_ATTACK, war_GetColouredCursor());
+				//wzSetCursor(CURSOR_ATTACK);
 			}
 			else if (ObjUnderMouse && ObjUnderMouse->player == selectedPlayer && (ObjUnderMouse->type == OBJ_DROID ||
 			         (ObjUnderMouse->type == OBJ_STRUCTURE && lasSatStructSelected((STRUCTURE *)ObjUnderMouse))))
 			{
 				// Special casing for selectables
-				wzSetCursor(CURSOR_SELECT);
+				pie_SetMouse(CURSOR_SELECT, war_GetColouredCursor());
+				//wzSetCursor(CURSOR_SELECT);
 			}
 			else if (ObjUnderMouse && ObjUnderMouse->player == selectedPlayer && ObjUnderMouse->type == OBJ_STRUCTURE)
 			{
-				wzSetCursor(CURSOR_DEFAULT);
+				pie_SetMouse(CURSOR_DEFAULT, war_GetColouredCursor());
+				// wzSetCursor(CURSOR_DEFAULT);
 			}
 			else
 			{
 				//display block cursor
-				wzSetCursor(CURSOR_NOTPOSSIBLE);
+				pie_SetMouse(CURSOR_NOTPOSSIBLE, war_GetColouredCursor());
+				// wzSetCursor(CURSOR_NOTPOSSIBLE);
 			}
 		}
 		else if (ObjUnderMouse && (ObjUnderMouse->player == selectedPlayer) &&
@@ -1088,11 +1100,13 @@ void processMouseClickInput(void)
 			&& (asWeaponStats[((STRUCTURE *)ObjUnderMouse)->asWeaps[0].nStat].weaponSubClass == WSC_LAS_SAT))
 		    || ObjUnderMouse->type == OBJ_DROID))
 		{
-			wzSetCursor(CURSOR_SELECT); // Special casing for LasSat or own unit
+			pie_SetMouse(CURSOR_SELECT, war_GetColouredCursor());
+			// wzSetCursor(CURSOR_SELECT); // Special casing for LasSat or own unit
 		}
 		else
 		{
-			wzSetCursor(CURSOR_DEFAULT);
+			pie_SetMouse(CURSOR_DEFAULT, war_GetColouredCursor());
+			// wzSetCursor(CURSOR_DEFAULT);
 		}
 	}
 

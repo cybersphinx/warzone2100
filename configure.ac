@@ -367,6 +367,7 @@ fi
 
 # Checks for modules:
 
+PKG_CHECK_MODULES([SDL], [sdl >= 1.2])
 PKG_CHECK_MODULES([PNG], [libpng >= 1.2])
 PKG_CHECK_MODULES([THEORA], [theora >= 1.0])
 

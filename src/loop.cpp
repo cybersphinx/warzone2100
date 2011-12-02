@@ -198,7 +198,8 @@ GAMECODE gameLoop(void)
 
 	audio_Update();
 
-	wzShowMouse(true);
+	pie_ShowMouse(true);
+	// wzShowMouse(true);
 
 	if (!paused)
 	{
@@ -237,7 +238,8 @@ GAMECODE gameLoop(void)
 						 && getHQExists(selectedPlayer) ) ) )
 			{
 				// Using software cursors (when on) for these menus due to a bug in SDL's SDL_ShowCursor()
-				wzSetCursor(CURSOR_DEFAULT);
+				pie_SetMouse(CURSOR_DEFAULT, war_GetColouredCursor());
+				// wzSetCursor(CURSOR_DEFAULT);
 
 				intRetVal = INT_INTERCEPT;
 			}
@@ -509,7 +511,8 @@ GAMECODE gameLoop(void)
 	else // paused
 	{
 		// Using software cursors (when on) for these menus due to a bug in SDL's SDL_ShowCursor()
-		wzSetCursor(CURSOR_DEFAULT);
+		pie_SetMouse(CURSOR_DEFAULT, war_GetColouredCursor());
+		// wzSetCursor(CURSOR_DEFAULT);
 
 		intRetVal = INT_NONE;
 
@@ -634,6 +637,8 @@ GAMECODE gameLoop(void)
 		}
 		pie_SetDepthBufferStatus(DEPTH_CMP_LEQ_WRT_ON);
 		pie_SetFogStatus(true);
+// FIXME: not sure if needed
+		pie_DrawMouse(mouseX(), mouseY());
 	}
 
 	pie_GetResetCounts(&loopPieCount, &loopTileCount, &loopPolyCount, &loopStateChanges);
@@ -767,7 +772,8 @@ void loop_SetVideoPlaybackMode(void)
 	gameTimeStop();
 	pie_SetFogStatus(false);
 	audio_StopAll();
-	wzShowMouse(false);
+	pie_ShowMouse(false);
+	// wzShowMouse(false);
 	screen_StopBackDrop();
 	pie_ScreenFlip(CLEAR_BLACK);
 }
@@ -781,7 +787,8 @@ void loop_ClearVideoPlaybackMode(void)
 	gameTimeStart();
 	pie_SetFogStatus(true);
 	cdAudio_Resume();
-	wzShowMouse(true);
+	pie_ShowMouse(true);
+	// wzShowMouse(true);
 	ASSERT( videoMode == 0, "loop_ClearVideoPlaybackMode: out of sync." );
 }
 

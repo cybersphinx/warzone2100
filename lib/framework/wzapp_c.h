@@ -21,6 +21,30 @@
 #ifndef __INCLUDED_WZAPP_C_H__
 #define __INCLUDED_WZAPP_C_H__
 
+// FIXME: NOTE: Figure out what is needed
+// TODO Replace this file during Qt merge:
+// git checkout origin/qt-trunk lib/framework/wzapp_c.h
+#define WZ_THREAD SDL_Thread
+#define WZ_MUTEX SDL_mutex
+#define WZ_SEMAPHORE SDL_sem
+#define wzMutexLock SDL_LockMutex
+#define wzMutexUnlock SDL_UnlockMutex
+#define wzSemaphoreCreate SDL_CreateSemaphore
+#define wzSemaphoreDestroy SDL_DestroySemaphore
+#define wzSemaphoreWait SDL_SemWait
+#define wzSemaphorePost SDL_SemPost
+#define wzThreadJoin(x) SDL_WaitThread(x, NULL)
+#define wzMutexDestroy SDL_DestroyMutex
+#define wzMutexCreate SDL_CreateMutex
+#define wzYieldCurrentThread() SDL_Delay(10)
+#define wzThreadCreate SDL_CreateThread
+#define wzThreadStart(x)
+#define wzGetTicks() SDL_GetTicks()
+#include <SDL/SDL.h>
+#include <SDL/SDL_thread.h>
+#include <SDL/SDL_timer.h>
+
+#if 0
 struct _wzThread;
 struct _wzMutex;
 struct _wzSemaphore;
@@ -54,5 +78,6 @@ void wzSemaphoreDestroy(WZ_SEMAPHORE *semaphore);
 void wzSemaphoreWait(WZ_SEMAPHORE *semaphore);
 void wzSemaphorePost(WZ_SEMAPHORE *semaphore);
 int wzSemaphoreAvailable(WZ_SEMAPHORE *semaphore);
+#endif
 
 #endif

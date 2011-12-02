@@ -2573,7 +2573,9 @@ void intRemoveMissionResultNoAnim(void)
 
 void intRunMissionResult(void)
 {
-	wzSetCursor(CURSOR_DEFAULT);
+	// Using software cursors (when on) for these menus due to a bug in SDL's SDL_ShowCursor()
+	pie_SetMouse(CURSOR_DEFAULT, war_GetColouredCursor());
+	//wzSetCursor(CURSOR_DEFAULT);
 
 	if(bLoadSaveUp)
 	{

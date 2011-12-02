@@ -278,7 +278,8 @@ static bool _intAddInGameOptions(void)
 	intMode		= INT_INGAMEOP;			// change interface mode.
 	InGameOpUp	= true;					// inform interface.
 
-	wzSetCursor(CURSOR_DEFAULT);
+	pie_SetMouse(CURSOR_DEFAULT, false);
+	// wzSetCursor(CURSOR_DEFAULT);
 
 	return true;
 }

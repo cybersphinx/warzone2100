@@ -126,7 +126,8 @@ TITLECODE titleLoop(void)
 	pie_SetDepthBufferStatus(DEPTH_CMP_ALWAYS_WRT_ON);
 	pie_SetFogStatus(false);
 	screen_RestartBackDrop();
-	wzShowMouse(true);
+	pie_ShowMouse(true);
+	//wzShowMouse(true);
 
 	// When we first init the game, firstcall is true.
 	if (firstcall)
@@ -152,7 +153,8 @@ TITLECODE titleLoop(void)
 			changeTitleMode(TITLE);			// normal game, run main title screen.
 		}
 		// Using software cursors (when on) for these menus due to a bug in SDL's SDL_ShowCursor()
-		wzSetCursor(CURSOR_DEFAULT);
+		pie_SetMouse(CURSOR_DEFAULT, war_GetColouredCursor());
+		//wzSetCursor(CURSOR_DEFAULT);
 	}
 
 	if (titleMode != MULTIOPTION && titleMode != MULTILIMIT && titleMode != STARTGAME)
@@ -257,6 +259,8 @@ TITLECODE titleLoop(void)
 
 	audio_Update();
 
+	pie_DrawMouse(mouseX(), mouseY());
+
 	pie_SetFogStatus(false);
 	pie_ScreenFlip(CLEAR_BLACK);//title loop
 
@@ -276,7 +280,8 @@ TITLECODE titleLoop(void)
 void loadingScreenCallback(void)
 {
 	const PIELIGHT loadingbar_background = WZCOL_LOADING_BAR_BACKGROUND;
-	const uint32_t currTick = wzGetTicks();
+	const uint32_t currTick = SDL_GetTicks();
+	// const uint32_t currTick = wzGetTicks();
 	unsigned int i;
 
 	if (currTick - lastTick < 50)
@@ -313,7 +318,8 @@ void loadingScreenCallback(void)
 // fill buffers with the static screen
 void initLoadingScreen( bool drawbdrop )
 {
-	wzShowMouse(false);
+	pie_ShowMouse(false);
+	// wzShowMouse(false);
 	if (!drawbdrop)	// fill buffers
 	{
 		//just init the load bar with the current screen

@@ -49,7 +49,8 @@
 #define GAMESERVERPORT		2100
 
 static const char *fileName = "config";
-
+// FIXME: HACK:
+#define GL_RGBA                           0x1908
 // ////////////////////////////////////////////////////////////////////////////
 bool loadConfig()
 {
@@ -65,7 +66,7 @@ bool loadConfig()
 	if (ini.contains("cdvol")) sound_SetMusicVolume(ini.value("cdvol").toDouble() / 100.0);
 	if (ini.contains("music_enabled")) war_SetMusicEnabled(ini.value("music_enabled").toBool());
 	if (ini.contains("language")) setLanguage(ini.value("language").toString().toUtf8().constData());
-	if (ini.contains("nomousewarp")) setMouseWarp(ini.value("nomousewarp").toBool());
+	// FIXME: FIXME: if (ini.contains("nomousewarp")) setMouseWarp(ini.value("nomousewarp").toBool());
 	if (ini.contains("notexturecompression")) wz_texture_compression = GL_RGBA;
 	showFPS = ini.value("showFPS", false).toBool();
 	scroll_speed_accel = ini.value("scroll", DEFAULTSCROLL).toInt();
@@ -190,7 +191,7 @@ bool saveConfig()
 	ini.setValue("scroll",(SDWORD)scroll_speed_accel);		// scroll
 	ini.setValue("shake",(SDWORD)(getShakeStatus()));		// screenshake
 	ini.setValue("mouseflip",(SDWORD)(getInvertMouseStatus()));	// flipmouse
-	ini.setValue("nomousewarp", (SDWORD)getMouseWarp()); 		// mouse warp
+	// FIXME: FIXME: ini.setValue("nomousewarp", (SDWORD)getMouseWarp()); 		// mouse warp
 	ini.setValue("RightClickOrders",(SDWORD)(getRightClickOrders()));
 	ini.setValue("MiddleClickRotate",(SDWORD)(getMiddleClickRotate()));
 	ini.setValue("showFPS", (SDWORD)showFPS);

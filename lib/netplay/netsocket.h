@@ -39,7 +39,7 @@ static const SOCKET INVALID_SOCKET = -1;
 #endif
 
 #ifdef WZ_OS_WIN
-# include <winsock2.h>
+//# include <winsock2.h>
 # include <ws2tcpip.h>
 # undef EAGAIN
 # undef EBADF

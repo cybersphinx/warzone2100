@@ -23,6 +23,8 @@
 #include "lib/framework/frame.h"
 #include "lib/framework/opengl.h"
 
+#include <SDL.h>
+#include <SDL_mouse.h>
 #include <physfs.h>
 
 #include "lib/ivis_opengl/pieblitfunc.h"
@@ -35,6 +37,13 @@
 /*
  *	Global Variables
  */
+
+// Variables for the coloured mouse cursor
+static CURSOR MouseCursor = CURSOR_ARROW;
+static bool ColouredMouse = false;
+static IMAGEFILE* MouseCursors = NULL;
+static uint16_t MouseCursorIDs[CURSOR_MAX];
+static bool MouseVisible = true;
 
 static bool shadersAvailable;
 static GLuint shaderProgram[SHADER_MAX];
@@ -642,6 +651,53 @@ void pie_SetRendMode(REND_MODE rendMode)
 		}
 	}
 	return;
+}
+
+void pie_InitColourMouse(IMAGEFILE* img, const uint16_t cursorIDs[CURSOR_MAX])
+{
+	MouseCursors = img;
+	memcpy(MouseCursorIDs, cursorIDs, sizeof(MouseCursorIDs));
+}
+
+/** Selects the given mouse cursor.
+ *  \param cursor   mouse cursor to render
+ *  \param coloured wether a coloured or black&white cursor should be used
+ */
+void pie_SetMouse(CURSOR cursor, bool coloured)
+{
+	ASSERT(cursor < CURSOR_MAX, "Attempting to load non-existent cursor: %u", (unsigned int)cursor);
+
+	MouseCursor = cursor;
+
+	frameSetCursor(MouseCursor);
+	ColouredMouse = coloured;
+}
+
+/** Draws the current mouse cursor at the given coordinates
+ *  \param X,Y mouse coordinates
+ */
+void pie_DrawMouse(unsigned int X, unsigned int Y)
+{
+	if (ColouredMouse && MouseVisible)
+	{
+		ASSERT(MouseCursors != NULL, "Drawing coloured mouse cursor while no coloured mouse cursors have been loaded yet!");
+
+		iV_DrawImage(MouseCursors, MouseCursorIDs[MouseCursor], X, Y);
+	}
+}
+
+/** Set the visibility of the mouse cursor */
+void pie_ShowMouse(bool visible)
+{
+	MouseVisible = visible;
+	if (MouseVisible && !ColouredMouse)
+	{
+		SDL_ShowCursor(SDL_ENABLE);
+	}
+	else
+	{
+		SDL_ShowCursor(SDL_DISABLE);
+	}
 }
 
 bool _glerrors(const char *function, const char *file, int line)

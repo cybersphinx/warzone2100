@@ -1,5 +1,6 @@
 /*
 	This file is part of Warzone 2100.
+	Copyright (C) 2008  Giel van Schijndel
 	Copyright (C) 2008-2011  Warzone 2100 Project
 
 	Warzone 2100 is free software; you can redistribute it and/or modify
@@ -17,20 +18,21 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
-#ifndef __INCLUDED_LIB_SEQUENCE_TIMER_H__
-#define __INCLUDED_LIB_SEQUENCE_TIMER_H__
+#include "frame.h"
+#include "cursors.h"
 
-void   Timer_Init(void);
-void   Timer_start(void);					// start timer
-void   Timer_stop(void);					// stop the timer
-double Timer_getElapsedMilliSecs(void);		// get elapsed time in milliseconds
-double Timer_getElapsedMicroSecs(void);		// get elapsed time in microseconds
+SDL_Cursor* init_system_cursor(CURSOR cur, enum CURSOR_TYPE type)
+{
+	switch (type)
+	{
+		case CURSOR_16:
+			return init_system_cursor16(cur);
 
-#if defined(WZ1_OS_WIN)
-# include <winsock2.h> /* for struct timeval */
+		case CURSOR_32:
+			return init_system_cursor32(cur);
 
-struct timezone;
-extern int gettimeofday(struct timeval* tv, struct timezone* tz);
-#endif
-
-#endif // __INCLUDED_LIB_SEQUENCE_TIMER_H__
+		default:
+			ASSERT(!"Bad cursor type", "Non-existent cursor type used: %u", (unsigned int)type);
+			return init_system_cursor32(cur);
+	}
+}

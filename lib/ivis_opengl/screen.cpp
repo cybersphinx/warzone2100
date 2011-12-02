@@ -28,6 +28,7 @@
 #include "lib/framework/frame.h"
 #include "lib/framework/opengl.h"
 #include "lib/exceptionhandler/dumpinfo.h"
+#include <SDL.h>
 #include <physfs.h>
 #include <png.h>
 #include "lib/ivis_opengl/png_util.h"
@@ -42,9 +43,15 @@
 #include "src/console.h"
 #include "src/levels.h"
 
+/* The Current screen size and bit depth */
+UDWORD		screenWidth = 0;
+UDWORD		screenHeight = 0;
+UDWORD		screenDepth = 0;
+
 /* global used to indicate preferred internal OpenGL format */
 int wz_texture_compression = 0;
 
+static SDL_Surface	*screen = NULL;
 static bool		bBackDrop = false;
 static char		screendump_filename[PATH_MAX];
 static bool		screendump_required = false;
@@ -56,6 +63,116 @@ static bool mappreview = false;
 static char mapname[256];
 
 /* Initialise the double buffered display */
+bool screenInitialise(
+			UDWORD		width,		// Display width
+			UDWORD		height,		// Display height
+			UDWORD		bitDepth,	// Display bit depth
+			unsigned int fsaa,      // FSAA anti aliasing level
+			bool		fullScreen,	// Whether to start windowed
+							// or full screen
+			bool		vsync)		// If to sync to vblank or not
+{
+	int video_flags = 0;
+	int bpp = 0, value;
+	char buf[512];
+	GLint glMaxTUs;
+	GLenum err;
+
+	// Fetch the video info.
+	const SDL_VideoInfo* video_info = SDL_GetVideoInfo();
+
+	if (width == 0 || height == 0)
+	{
+		pie_SetVideoBufferWidth(width = screenWidth = video_info->current_w);
+		pie_SetVideoBufferHeight(height = screenHeight = video_info->current_h);
+		pie_SetVideoBufferDepth(bitDepth = screenDepth = video_info->vfmt->BitsPerPixel);
+	}
+	else
+	{
+		screenWidth = width;
+		screenHeight = height;
+		screenDepth = bitDepth;
+	}
+	screenWidth = MAX(screenWidth, 640);
+	screenHeight = MAX(screenHeight, 480);
+
+	if (!video_info)
+	{
+		return false;
+	}
+
+	// The flags to pass to SDL_SetVideoMode.
+	video_flags  = SDL_OPENGL;    // Enable OpenGL in SDL.
+	video_flags |= SDL_ANYFORMAT; // Don't emulate requested BPP if not available.
+
+	if (fullScreen)
+	{
+		video_flags |= SDL_FULLSCREEN;
+	}
+
+	// Set the double buffer OpenGL attribute.
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+	// Enable vsync if requested by the user
+	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, vsync);
+
+	// Enable FSAA anti-aliasing if and at the level requested by the user
+	if (fsaa)
+	{
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, fsaa);
+	}
+
+	bpp = SDL_VideoModeOK(width, height, bitDepth, video_flags);
+	if (!bpp)
+	{
+		debug(LOG_ERROR, "Video mode %dx%d@%dbpp is not supported!", width, height, bitDepth);
+		return false;
+	}
+	switch (bpp)
+	{
+		case 32:
+		case 24:
+			SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+			SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+			SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+			SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+			SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+			SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+			break;
+		case 16:
+			info("Using colour depth of %i instead of %i.", bpp, screenDepth);
+			info("You will experience graphics glitches!");
+			SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
+			SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 6);
+			SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
+			SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+			SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+			break;
+		case 8:
+			debug(LOG_FATAL, "You don't want to play Warzone with a bit depth of %i, do you?", bpp);
+			exit(1);
+			break;
+		default:
+			debug(LOG_FATAL, "Unsupported bit depth: %i", bpp);
+			exit(1);
+			break;
+	}
+
+	screen = SDL_SetVideoMode(width, height, bpp, video_flags);
+	if (!screen)
+	{
+		debug(LOG_ERROR, "SDL_SetVideoMode failed (%s).", SDL_GetError());
+		return false;
+	}
+	if ( SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &value) == -1)
+	{
+		debug( LOG_FATAL, "OpenGL initialization did not give double buffering!" );
+		debug( LOG_FATAL, "Double buffering is required for this game!");
+		exit(1);
+	}
+
+#if 0
 bool screenInitialise()
 {
 	char buf[256];
@@ -63,7 +180,7 @@ bool screenInitialise()
 	GLenum err;
 
 	glErrors();
-
+#endif
 	err = glewInit();
 	if (GLEW_OK != err)
 	{
@@ -156,6 +273,17 @@ bool screenInitialise()
 		debug(LOG_FATAL, _("OpenGL 1.4 is not supported by your system. The game requires this. Please upgrade your graphics drivers/hardware, if possible."));
 		exit(1);
 	}
+	// set up matrix for screen
+	glViewport(0, 0, width, height);
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	glOrtho(0.0f, (double)width, (double)height, 0.0f, 1.0f, -1.0f);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glCullFace(GL_FRONT);
+	glEnable(GL_CULL_FACE);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -166,8 +294,19 @@ bool screenInitialise()
 
 void screenShutDown(void)
 {
+	if (screen != NULL)
+	{
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		glFlush();
+		SDL_FreeSurface(screen);
+		screen = NULL;
+	}
+#if 0
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ACCUM_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+#endif
+
 }
 
 void screen_SetBackDropFromFile(const char* filename)
@@ -371,6 +510,7 @@ bool screen_getMapPreview(void)
 /* Swap between windowed and full screen mode */
 void screenToggleMode(void)
 {
+	(void) SDL_WM_ToggleFullScreen(screen);
 	// TODO
 }
 

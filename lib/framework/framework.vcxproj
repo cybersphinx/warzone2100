@@ -74,6 +74,7 @@
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\devpkg\include;$(Qtdir)\include;$(IncludePath)</IncludePath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='STLport-Release|Win32'">..\devpkg\stlport5.2.1\stlport;..\devpkg\include;$(Qtdir)\include;$(IncludePath)</IncludePath>
     <ExtensionsToDeleteOnClean Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">*.lex.cpp;*.tab.cpp;*.tab.hpp;$(ExtensionsToDeleteOnClean)</ExtensionsToDeleteOnClean>
+    <PreBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='STLport-Debug|Win32'">false</PreBuildEventUseInBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <FlexGenerator>
@@ -171,12 +172,17 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="configfile.cpp" />
     <ClCompile Include="crc.cpp" />
+    <ClCompile Include="cursors.cpp" />
+    <ClCompile Include="cursors16.cpp" />
+    <ClCompile Include="cursors32.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="frame.cpp" />
     <ClCompile Include="frameresource.cpp" />
     <ClCompile Include="geometry.cpp" />
     <ClCompile Include="i18n.cpp" />
+    <ClCompile Include="input.cpp" />
     <ClCompile Include="lexer_input.cpp" />
     <ClCompile Include="resource_lexer.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
@@ -189,6 +195,7 @@
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='STLport-Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
     </ClCompile>
     <ClCompile Include="resource_parser.cpp" />
+    <ClCompile Include="SDL_framerate.cpp" />
     <ClCompile Include="stdio_ext.cpp" />
     <ClCompile Include="strres.cpp" />
     <ClCompile Include="strres_lexer.cpp" />

@@ -79,7 +79,8 @@ enum QUEUE_MODE
  *  @return true when the framework library is successfully initialised, false
  *          when a part of the initialisation failed.
  */
-extern bool frameInitialise(void);
+extern bool frameInitialise(const char* pWindowName, UDWORD width, UDWORD height, UDWORD bitDepth, unsigned int fsaa, bool fullScreen, bool vsync);
+//extern bool frameInitialise(void);
 
 extern bool selfTest;
 
@@ -108,6 +109,8 @@ extern int getFramerateLimit(void);
  */
 extern void frameUpdate(void);
 
+extern void frameSetCursor(CURSOR cur);
+
 /** Returns the current frame we're on - used to establish whats on screen. */
 extern UDWORD frameGetFrameNumber(void);
 
@@ -122,4 +125,10 @@ static inline WZ_DECL_CONST const char * bool2string(bool var)
 	return (var ? "true" : "false");
 }
 
+#if defined(WZ_OS_WIN)
+# include <winsock2.h> /* for struct timeval */
+
+struct timezone;
+extern int gettimeofday(struct timeval* tv, struct timezone* tz);
+#endif
 #endif

@@ -22,6 +22,10 @@
  */
 
 // Get platform defines before checking for them!
+#include "lib/framework/frame.h"
+#include <SDL.h>
+
+// ** qt BS
 #include "lib/framework/wzapp.h"
 #include <QtCore/QTextCodec>
 #include <QtGui/QApplication>
@@ -809,7 +813,8 @@ static void startGameLoop(void)
 	// Trap the cursor if cursor snapping is enabled
 	if (war_GetTrapCursor())
 	{
-		wzGrabMouse();
+		SDL_WM_GrabInput(SDL_GRAB_ON);
+		//wzGrabMouse();
 	}
 
 	// set a flag for the trigger/event system to indicate initialisation is complete
@@ -852,7 +857,8 @@ static void stopGameLoop(void)
 	// Disable cursor trapping
 	if (war_GetTrapCursor())
 	{
-		wzReleaseMouse();
+		SDL_WM_GrabInput(SDL_GRAB_OFF);
+		// wzReleaseMouse();
 	}
 
 	gameInitialised = false;
@@ -888,7 +894,8 @@ static bool initSaveGameLoad(void)
 	// Trap the cursor if cursor snapping is enabled
 	if (war_GetTrapCursor())
 	{
-		wzGrabMouse();
+		SDL_WM_GrabInput(SDL_GRAB_ON);
+		// wzGrabMouse();
 	}
 	if (challengeActive)
 	{
@@ -948,7 +955,13 @@ static void runTitleLoop(void)
 		case TITLECODE_QUITGAME:
 			debug(LOG_MAIN, "TITLECODE_QUITGAME");
 			stopTitleLoop();
-			wzQuit();
+			{
+				// FIXME: wzQuit();
+				// Create a quit event to halt game loop.
+				SDL_Event quitEvent;
+				quitEvent.type = SDL_QUIT;
+				SDL_PushEvent(&quitEvent);
+			}
 			break;
 		case TITLECODE_SAVEGAMELOAD:
 			{
@@ -984,11 +997,128 @@ static void runTitleLoop(void)
 }
 
 /*!
+ * Activation (focus change) eventhandler
+ */
+static void handleActiveEvent(SDL_ActiveEvent * activeEvent)
+{
+	// Ignore focus loss through SDL_APPMOUSEFOCUS, since it mostly happens accidentialy
+	// active.state is a bitflag! Mixed events (eg. APPACTIVE|APPMOUSEFOCUS) will thus not be ignored.
+	if ( activeEvent->state == SDL_APPMOUSEFOCUS )
+	{
+		setMouseScroll(activeEvent->gain);
+		return;
+	}
+
+	if ( activeEvent->gain == 1 )
+	{
+		debug( LOG_NEVER, "WM_SETFOCUS");
+		if (focusState != FOCUS_IN)
+		{
+			focusState = FOCUS_IN;
+
+			// Don't pause in multiplayer!
+			if (war_GetPauseOnFocusLoss() && !NetPlay.bComms)
+			{
+				gameTimeStart();
+				audio_ResumeAll();
+				cdAudio_Resume();
+			}
+			// enable scrolling
+			setScrollPause(false);
+			resetScroll();
+		}
+	}
+	else
+	{
+		debug( LOG_NEVER, "WM_KILLFOCUS");
+		if (focusState != FOCUS_OUT)
+		{
+			focusState = FOCUS_OUT;
+
+			// Don't pause in multiplayer!
+			if (war_GetPauseOnFocusLoss() && !NetPlay.bComms)
+			{
+				gameTimeStop();
+				audio_PauseAll();
+				cdAudio_Pause();
+			}
+			/* Have to tell the input system that we've lost focus */
+			inputLooseFocus();
+			// stop scrolling
+			setScrollPause(true);
+		}
+	}
+}
+
+
+/*!
  * The mainloop.
  * Fetches events, executes appropriate code
  */
 void mainLoop(void)
 {
+	SDL_Event event;
+
+	while (true)
+	{
+		frameUpdate(); // General housekeeping
+
+		/* Deal with any windows messages */
+		while (SDL_PollEvent(&event))
+		{
+			switch (event.type)
+			{
+				case SDL_KEYUP:
+				case SDL_KEYDOWN:
+					inputHandleKeyEvent(&event.key);
+					break;
+				case SDL_MOUSEBUTTONUP:
+				case SDL_MOUSEBUTTONDOWN:
+					inputHandleMouseButtonEvent(&event.button);
+					break;
+				case SDL_MOUSEMOTION:
+					inputHandleMouseMotionEvent(&event.motion);
+					break;
+				case SDL_ACTIVEEVENT:
+					handleActiveEvent(&event.active);
+					break;
+				case SDL_QUIT:
+					saveConfig();
+					return;
+				default:
+					break;
+			}
+		}
+		// Screenshot key is now available globally
+		if(keyPressed(KEY_F10))
+		{
+			kf_ScreenDump();
+			inputLooseFocus();		// remove it from input stream
+		}
+
+		// only pause when not in multiplayer, no focus, and we actually want to pause
+		if (NetPlay.bComms || focusState == FOCUS_IN || !war_GetPauseOnFocusLoss())
+		{
+			if (loop_GetVideoStatus())
+			{
+				videoLoop(); // Display the video if neccessary
+			}
+			else switch (GetGameMode())
+			{
+				case GS_NORMAL: // Run the gameloop code
+					runGameLoop();
+					break;
+				case GS_TITLE_SCREEN: // Run the titleloop code
+					runTitleLoop();
+					break;
+				default:
+					break;
+			}
+
+			realTimeUpdate(); // Update realTime.
+		}
+	}
+#if 0
 	frameUpdate(); // General housekeeping
 
 	// Screenshot key is now available globally
@@ -1017,6 +1147,8 @@ void mainLoop(void)
 		}
 		realTimeUpdate(); // Update realTime.
 	}
+#endif
+
 }
 
 bool getUTF8CmdLine(int* const utfargc, const char*** const utfargv) // explicitely pass by reference
@@ -1067,7 +1199,8 @@ bool getUTF8CmdLine(int* const utfargc, const char*** const utfargv) // explicit
 
 int main(int argc, char *argv[])
 {
-	QApplication app(argc, argv);
+	// QT BS-- it is REQUIRED for Qscript :P
+	 QApplication app(argc, argv);
 	int utfargc = argc;
 	const char** utfargv = (const char**)argv;
 
@@ -1255,6 +1388,13 @@ int main(int argc, char *argv[])
 		}
 	}
 
+//if (!frameInitialise( "Warzone 2100", pie_GetVideoBufferWidth(), pie_GetVideoBufferHeight(), pie_GetVideoBufferDepth(), war_getFSAA(), war_getFullscreen(), war_GetVsync()))
+//{
+//	return EXIT_FAILURE;
+//}
+
+
+#if 0
 	debug(LOG_MAIN, "Qt initialization");
 	QGL::setPreferredPaintEngine(QPaintEngine::OpenGL); // Workaround for incorrect text rendering on nany platforms.
 
@@ -1304,13 +1444,16 @@ int main(int argc, char *argv[])
 	war_SetVsync(mainwindow.swapInterval() > 0);
 
 	mainwindow.setReadyToPaint();
-
+#endif
+	int w = pie_GetVideoBufferWidth();
+	int h = pie_GetVideoBufferHeight();
 	char buf[256];
 	ssprintf(buf, "Video Mode %d x %d (%s)", w, h, war_getFullscreen() ? "fullscreen" : "window");
 	addDumpInfo(buf);
 
 	debug(LOG_MAIN, "Final initialization");
-	if (!frameInitialise())
+//	if (!frameInitialise())
+	if (!frameInitialise( "Warzone 2100", pie_GetVideoBufferWidth(), pie_GetVideoBufferHeight(), pie_GetVideoBufferDepth(), war_getFSAA(), war_getFullscreen(), war_GetVsync()))
 	{
 		return EXIT_FAILURE;
 	}
@@ -1369,8 +1512,10 @@ int main(int argc, char *argv[])
 	debug_MEMSTATS();
 #endif
 	debug(LOG_MAIN, "Entering main loop");
-	mainwindow.update(); // kick off painting, needed on macosx
-	app.exec();
+	// Enter the mainloop
+	mainLoop();
+	// mainwindow.update(); // kick off painting, needed on macosx
+	// app.exec();
 	saveConfig();
 	systemShutdown();
 	debug(LOG_MAIN, "Completed shutting down Warzone 2100");
