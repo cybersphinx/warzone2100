@@ -48,8 +48,6 @@
 #include "lib/gamelib/gtime.h"
 #include <deque>
 
-static bool mousewarp = false;
-
 /* The possible states for keys */
 typedef enum _key_state
 {
@@ -79,12 +77,6 @@ static INPUT_STATE aKeyState[KEY_MAXSCAN];
 /** How far the mouse has to move to start a drag */
 #define DRAG_THRESHOLD	5
 
-/** Which button is being used for a drag */
-static MOUSE_KEY_CODE dragKey;
-
-/** The start of a possible drag by the mouse */
-static SDWORD dragX, dragY;
-
 /** The current mouse button state */
 static INPUT_STATE aMouseState[6];
 
@@ -102,14 +94,10 @@ struct InputKey
 static std::deque<InputKey> inputBuffer;
 
 static QColor fontColor;
-static uint16_t mouseXPos = 0, mouseYPos = 0;
-static CURSOR lastCursor = CURSOR_ARROW;
 static bool crashing = false;
 
 //unsigned int screenWidth = 0;
 //unsigned int screenHeight = 0;
-static void inputAddBuffer(UDWORD key, utf_32_char unicode);
-static int WZkeyToQtKey(int code);
 
 #if 0
 void WzMainWindow::loadCursor(CURSOR cursor, int x, int y, QImageReader &buffer)

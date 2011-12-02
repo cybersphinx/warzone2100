@@ -453,8 +453,8 @@ void _debug( code_part part, const char *function, const char *str, ... )
 			               "\n\nDo not forget to upload and attach those to a bug report at http://developer.wz2100.net/newticket"
 			               "\nThanks!", 2);
 #else
-			const char* popupBuf = useInputBuffer1 ? inputBuffer[1] : inputBuffer[0];
-			wzFatalDialog(popupBuf);
+//			const char* popupBuf = useInputBuffer1 ? inputBuffer[1] : inputBuffer[0];
+//			wzFatalDialog(popupBuf);
 #endif
 		}
 
