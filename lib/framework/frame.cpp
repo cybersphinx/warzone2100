@@ -83,25 +83,6 @@ static uint64_t curFrames = 0; // Number of frames elapsed since start
 static uint64_t lastFrames = 0;
 static uint32_t curTicks = 0; // Number of ticks since execution started
 static uint32_t lastTicks = 0;
-static FPSmanager wzFPSmanager;
-static bool	initFPSmanager = false;
-
-void setFramerateLimit(int fpsLimit)
-{
-	if (!initFPSmanager)
-	{
-		/* Initialize framerate handler */
-		SDL_initFramerate(&wzFPSmanager);
-		initFPSmanager = true;
-	}
-	SDL_setFramerate(&wzFPSmanager, fpsLimit);
-}
-
-
-int getFramerateLimit(void)
-{
-	return SDL_getFramerate(&wzFPSmanager);
-}
 
 /* InitFrameStuff - needs to be called once before frame loop commences */
 static void InitFrameStuff( void )
@@ -311,8 +292,6 @@ void frameUpdate(void)
 
 	/* Update the frame rate stuff */
 	MaintainFrameStuff();
-
-	SDL_framerateDelay(&wzFPSmanager);
 }
 
 

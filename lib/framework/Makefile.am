@@ -24,7 +24,6 @@ noinst_LIBRARIES = libframework.a
 noinst_HEADERS = \
 	$(MOCHEADER) \
 	wzapp_c.h \
-	configfile.h \
 	crc.h \
 	cursors.h \
 	debug.h \
@@ -55,7 +54,6 @@ noinst_HEADERS = \
 	endian_hack.h \
 	gettext.h \
 	macros.h \
-	SDL_framerate.h \
 	wz2100icon.h \
 	wzapp_c.h \
 	wzfs.h \
@@ -70,7 +68,6 @@ libframework_a_SOURCES = \
 	resource_parser.ypp \
 	strres_lexer.lpp \
 	strres_parser.ypp \
-	configfile.cpp \
 	crc.cpp \
 	cursors16.cpp \
 	cursors32.cpp \
@@ -82,7 +79,6 @@ libframework_a_SOURCES = \
 	i18n.cpp \
 	input.cpp \
 	lexer_input.cpp \
-	SDL_framerate.cpp \
 	stdio_ext.cpp \
 	strres.cpp \
 	treap.cpp \

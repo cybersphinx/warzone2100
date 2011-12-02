@@ -31,7 +31,6 @@
 
 #include "input.h"
 #include "frameint.h"
-#include "configfile.h"
 
 #include "lib/gamelib/gtime.h"
 
@@ -563,13 +562,13 @@ void setMousePos(uint16_t x, uint16_t y)
 
 	if (mousewarp == -1)
 	{
-		int val;
+//		int val;
 
 		mousewarp = 1;
-		if (getWarzoneKeyNumeric("nomousewarp", &val))
-		{
-			mousewarp = !val;
-		}
+//		if (getWarzoneKeyNumeric("nomousewarp", &val))
+//		{
+//			mousewarp = !val;
+//		}
 	}
 	if (mousewarp)
 		SDL_WarpMouse(x, y);
