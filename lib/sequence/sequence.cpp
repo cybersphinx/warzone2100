@@ -58,13 +58,11 @@
 #include "lib/framework/frame.h"
 #include "lib/framework/frameint.h"
 #include "lib/framework/opengl.h"
+#include "lib/ivis_opengl/piestate.h"
+#include "lib/sound/mixer.h"
+#include "lib/sound/openal_error.h"
 #include "sequence.h"
 #include "timer.h"
-#include "lib/framework/math_ext.h"
-#include "lib/ivis_opengl/piestate.h"
-#include "lib/sound/audio.h"
-#include "lib/sound/openal_error.h"
-#include "lib/sound/mixer.h"
 
 #include <theora/theora.h>
 #include <physfs.h>
@@ -212,6 +210,11 @@ static int queue_page(ogg_page *page)
 static void seq_SetFrameNumber(int frame)
 {
 	frames = frame;
+}
+
+static int seq_GetFrameNumber()
+{
+	return frames;
 }
 
 #if !defined(WZ_NOSOUND)
@@ -1038,11 +1041,6 @@ void seq_Shutdown()
 	basetime = -1;
 	pie_SetTexturePage(-1);
 	debug(LOG_VIDEO, " **** frames = %d dropped = %d ****", frames, dropped);
-}
-
-int seq_GetFrameNumber()
-{
-	return frames;
 }
 
 double seq_GetFrameTime()

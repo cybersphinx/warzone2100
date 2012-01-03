@@ -20,22 +20,19 @@
 #ifndef __INCLUDED_LIB_SEQUENCE_SEQUENCE_H__
 #define __INCLUDED_LIB_SEQUENCE_SEQUENCE_H__
 
-#include "lib/framework/types.h"
-
 typedef enum {
     SCANLINES_OFF,
     SCANLINES_50,
     SCANLINES_BLACK
 } SCANLINE_MODE;
 
-extern bool seq_Play(const char* filename);
-extern bool seq_Playing(void);
-extern bool seq_Update(void);
-extern void seq_Shutdown(void);
-extern int seq_GetFrameNumber(void);
-extern void seq_SetDisplaySize(int sizeX, int sizeY, int posX, int posY);
-extern void seq_setScanlineMode(SCANLINE_MODE mode);
-extern SCANLINE_MODE seq_getScanlineMode(void);
+bool seq_Play(const char* filename);
+bool seq_Playing(void);
+bool seq_Update(void);
+void seq_Shutdown(void);
+void seq_SetDisplaySize(int sizeX, int sizeY, int posX, int posY);
+void seq_setScanlineMode(SCANLINE_MODE mode);
+SCANLINE_MODE seq_getScanlineMode(void);
 double seq_GetFrameTime();
 
 #endif // __INCLUDED_LIB_SEQUENCE_SEQUENCE_H__
