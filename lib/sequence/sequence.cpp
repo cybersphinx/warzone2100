@@ -515,7 +515,7 @@ static void seq_InitOgg(void)
 	videobuf_ready = false;
 	videobuf_granulepos = -1;
 	videobuf_time = 0;
-	frames = 0;
+	seq_SetFrameNumber(0);
 	dropped = 0;
 
 #if !defined(WZ_NOSOUND)
