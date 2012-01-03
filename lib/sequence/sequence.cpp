@@ -66,6 +66,10 @@
 #include "sequence.h"
 #include "timer.h"
 
+#include "3rdparty/theoraplay/theoraplay.h"
+#include "3rdparty/theoraplay/theoraplay_physfs.h"
+
+
 #include <theora/theora.h>
 #include <physfs.h>
 
