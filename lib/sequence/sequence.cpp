@@ -55,6 +55,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "3rdparty/theoraplay/theoraplay.h"
+
 #include "lib/framework/frame.h"
 #include "lib/framework/frameint.h"
 #include "lib/framework/opengl.h"

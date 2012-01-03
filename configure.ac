@@ -384,7 +384,7 @@ if test "$backend" = "sdl"; then
 	PKG_CHECK_MODULES([SDL], [sdl >= 1.2])
 fi
 PKG_CHECK_MODULES([PNG], [libpng >= 1.2])
-PKG_CHECK_MODULES([THEORA], [theora >= 1.0])
+PKG_CHECK_MODULES([THEORA], [theoradec >= 1.0])
 
 AS_IF([test "x$enable_sound" = "xyes"],[
 	PKG_CHECK_MODULES([OPENAL], [openal >= 0.0.8])
@@ -467,6 +467,7 @@ AC_CONFIG_FILES([Makefile
 		win32/Makefile
 		tests/Makefile
 		3rdparty/miniupnpc/Makefile
+		3rdparty/theoraplay/Makefile
 		lib/framework/Makefile
 		lib/exceptionhandler/Makefile
 		lib/gamelib/Makefile
