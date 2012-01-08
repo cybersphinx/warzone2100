@@ -1,10 +1,16 @@
+SUBDIRS =
+
 if BACKEND_QT
-backend_subdir=lib/qtgame
-else
-backend_subdir=lib/sdl
+SUBDIRS += \
+	lib/qtgame
 endif
 
-SUBDIRS = \
+if BACKEND_SDL
+SUBDIRS += \
+	lib/sdl
+endif
+
+SUBDIRS += \
 	win32 \
 	3rdparty/miniupnpc \
 	lib/framework \
@@ -16,7 +22,6 @@ SUBDIRS = \
 	lib/sound \
 	lib/netplay \
 	lib/widget \
-	$(backend_subdir) \
 	tools/map \
 	src \
 	data \

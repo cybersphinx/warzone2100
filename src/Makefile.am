@@ -20,7 +20,11 @@ CLEANFILES = $(BUILT_SOURCES)
 EXTRA_DIST = \
 	autorevision.h
 
+if BACKEND_BOTH
+bin_PROGRAMS = warzone2100 warzone2100qt
+else
 bin_PROGRAMS = warzone2100
+endif
 noinst_HEADERS = \
 	action.h \
 	actiondef.h \
@@ -263,7 +267,7 @@ warzone2100_SOURCES = \
 	wavecast.cpp \
 	wrappers.cpp
 
-warzone2100_LIBS = \
+warzone2100_LIBS := \
 	$(top_builddir)/lib/widget/libwidget.a \
 	$(top_builddir)/lib/sequence/libsequence.a \
 	$(top_builddir)/lib/sound/libsound.a \
@@ -275,18 +279,27 @@ warzone2100_LIBS = \
 	$(top_builddir)/lib/exceptionhandler/libexceptionhandler.a \
 	$(top_builddir)/3rdparty/miniupnpc/libminiupnpc.a
 
-if BACKEND_QT
-warzone2100_LIBS += $(top_builddir)/lib/qtgame/libqtgame.a
-endif
-
-if BACKEND_SDL
-warzone2100_LIBS += $(top_builddir)/lib/sdl/libsdl.a
-endif
-
-warzone2100_LDADD = $(warzone2100_LIBS) $(LTLIBINTL) $(SDL_LIBS) $(PHYSFS_LIBS) $(PNG_LIBS) $(OGGVORBIS_LIBS) \
+warzone2100_LDADD := $(LTLIBINTL) $(PHYSFS_LIBS) $(PNG_LIBS) $(OGGVORBIS_LIBS) \
 	$(THEORA_LIBS) $(OPENAL_LIBS) $(OPENGLC_LIBS) $(OPENGL_LIBS) $(QT4_LIBS) $(QJSON_LIBS) $(GLEW_LIBS) \
 	$(X_LIBS) $(X_EXTRA_LIBS) $(LDFLAGS)
 
 if MINGW32
 warzone2100_LDADD += $(top_builddir)/win32/warzone2100.o $(WIN32_LIBS)
+endif
+
+if BACKEND_BOTH
+warzone2100qt_LDADD := $(warzone2100qt_LIBS) $(top_builddir)/lib/qtgame/libqtgame.a $(warzone2100_LDADD)
+warzone2100qt_SOURCES := $(warzone2100_SOURCES)
+warzone2100_LDADD += $(SDL_LIBS) $(warzone2100_LIBS) $(top_builddir)/lib/sdl/libsdl.a
+else
+
+if BACKEND_QT
+warzone2100_LIBS += $(top_builddir)/lib/qtgame/libqtgame.a
+endif
+
+if BACKEND_SDL
+warzone2100_LDADD += $(SDL_LIBS)
+warzone2100_LIBS += $(top_builddir)/lib/sdl/libsdl.a
+endif
+
 endif

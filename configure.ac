@@ -82,13 +82,14 @@ AC_PROG_VERSION_CHECK([pkg-config], [0.9])
 
 AC_MSG_CHECKING([for backend])
 AC_ARG_WITH([backend],
-	AS_HELP_STRING([--with-backend=sdl/qt], [Backend rendering code to use [sdl]]),
+	AS_HELP_STRING([--with-backend=sdl/qt/both], [Backend rendering code to use [sdl]]),
 	[ backend=${withval} ], [ backend="sdl" ])
-AM_CONDITIONAL([BACKEND_QT], test "$backend" = "qt")
-AM_CONDITIONAL([BACKEND_SDL], test "$backend" = "sdl")
+AM_CONDITIONAL([BACKEND_QT], test "$backend" = "qt" -o "$backend" = "both")
+AM_CONDITIONAL([BACKEND_SDL], test "$backend" = "sdl" -o "$backend" = "both")
+AM_CONDITIONAL([BACKEND_BOTH], test "$backend" = "both")
 
 # Check for Qt
-if test "$backend" = "qt"; then
+if test "$backend" = "qt" -o "$backend" = "both"; then
 	AC_MSG_RESULT([Qt])
 	PKG_CHECK_MODULES(QT4, QtCore QtGui QtOpenGL QtNetwork QtScript,,[:])
 else
@@ -106,6 +107,11 @@ AC_SUBST(QT4_VERSION)
 AC_PATH_PROGS(MOC4, [moc-qt4 moc])
 AC_PATH_PROGS(UIC4, [uic-qt4 uic])
 AC_PATH_PROGS(RCC4, [rcc-qt4 rcc])
+
+# Check for SDL
+if test "$backend" = "sdl" -o "$backend" = "both"; then
+	PKG_CHECK_MODULES([SDL], [sdl >= 1.2])
+fi
 
 # Check for compiler
 case ${CC} in
@@ -379,10 +385,6 @@ fi
 
 
 # Checks for modules:
-
-if test "$backend" = "sdl"; then
-	PKG_CHECK_MODULES([SDL], [sdl >= 1.2])
-fi
 PKG_CHECK_MODULES([PNG], [libpng >= 1.2])
 PKG_CHECK_MODULES([THEORA], [theora >= 1.0])
 
